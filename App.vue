@@ -1,106 +1,73 @@
 <script setup>
-import { ref, onMounted, computed, watch} from 'vue'
-const todos = ref ([])
-const name = ref('')
+import { ref } from 'vue';
+const first_name = ref('')
+const last_name = ref ('')
+const email = ref('')
+const confirm_email = ref('')
+const password = ref('')
+const confirm_password = ref('') 
 
-const input_content = ref('') 
-const input_category = ref(null)
+const handleSubmit = () => {
+  if (confirm_email.value !== email.value){
+    console.log("email  dont match")
+  return;
+  }
+  
+  if(confirm_password.value !== password.value){
+    console.log("Password dont match")
+    return;
+  }
+  console.log(first_name.value)
+  console.log(last_name.value)
+  console.log(email.value)
+  console.log(confirm_email.value)
+  console.log(password.value)
+  console.log(confirm_password.value)
+  }
 
-const todos_asc = computed(() => todos.value.sort((a, b) => {
-  return b.createdAt - a.createdAt
-}))
 
-const addTodo = () => {
-    if (input_content.value.trim() === '' || input_category.value === null){
-      return
-    }
-    todos.value.push({
-      content: input_content.value,
-      category: input_category.value,
-      done: false,
-      createdAt: new Date().getTime()
-    })
 
-    input_category.value= null
-    input_content.value = ' '
-}
 
-const removeTodo = todo => {
-  todos.value = todos.value.filter(t => t !== todo)
-}
 
-watch(todos, (newVal) => {
-  localStorage.setItem('todos, JSON.stringify(newVal)')
-}, {deep: true})
-
-watch(name, (newVal)=> {
-  localStorage.setItem('name', newVal)
-})
-onMounted(()=> {
-  name.value = localStorage.getItem('name') || ''
-  todos.value = JSON.parse(localStorage.getItem('todos')) || []
-})
 </script>
 
 <template>
-  <main class="app">
-    <section class="greeting">
-      <h2 class="title">
-        What's up, <input type="text" placeholder="Name here" v-model="name" />
-      </h2>
-    </section>
+  <h2>Sign Up</h2>
+  <form @submit.prevent="handleSubmit">
+    <label>First Name:  </label>
+    <input type="text" placeholder="Enter your First Name:" v-model="first_name">
+    <br>
+    <br>
 
-    <section class="create-todo">
-      <h3>CREATE A TODO</h3>
-      <form @submit.prevent ="addTodo">
-        <h4>What's on your TODO List?</h4>
-        <input
-            type="text"   
-            placeholder="e.g. make a video" 
-            v-model="input_content" />
-        <h4> Pick a Category</h4>
+    <label>Last Name:  </label>
+    <input type="text" placeholder="Enter your Last Name:" v-model="last_name">
+    <br>
+    <br>
 
-        <div class="options">
-          <label>
-            <input type="radio" 
-              name="Category"
-              value="Buisness"
-              v-model="input_category" />
-          <span class="bubble Buisness"></span>
-          <div>Buisness</div>
-          </label>
-  
-          <label>
-            <input type="radio" 
-              name="Category"
-              value="Personal"
-              v-model="input_category" />
-          <span class="bubble Personal"></span>
-          <div>Personal</div>
-          </label>
-        </div>
-          <input type="submit" value="Add Todo">
-      </form>
-    </section>
-    <section class="todo-list">
-      <h3>Todo List</h3>
-      <div class="list">
-        <div v-for="todo in todos_asc" :class="`todo-item ${todo.done && 'done'} `">
-          <label>
-            <input type="checkbox" v-model="todo.done" />
-            <span :class="`bubble ${todo.category}`"></span>
-          </label>
+    <label>Email:  </label>
+    <input type="email" placeholder="Enter your email:" v-model="email">
 
-          <div class="todo-content">
-              <input type="text" v-model="todo.content" />
-          </div>
-          <div class="actions">
-            <button class="delete" @click="remoTodo(todo)"></button>
-          </div>
-        </div> 
-        </div>
-    </section>
-  </main>
+    <br>
+    <br>
+
+    <label>Confirm Email:  </label>
+    <input type="email" placeholder="Re-enter your Email:" v-model="confirm_email">
+    <div v-if="email != confirm_email" class="text-danger">Email does'nt Match</div>
+    <br>
+    <br>
+
+    <label>Password:</label>
+    <input type="password" placeholder="Enter your Password:" v-model="password">
+    <br>
+    <br>
+
+    <label>Confirm:  </label>
+    <input type="password" placeholder="Re-enter your Password:" v-model="confirm_password">
+    <div v-if="password != confirm_password" class="text-danger">Password does'nt Match</div>
+    <br>
+    <br>
+
+    <button type="submit">Submit</button>
+  </form>
 
 </template>
-
